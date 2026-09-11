@@ -1,0 +1,44 @@
+# misch configuration. See misch/docs/DESIGN.md for the full schema.
+
+[project]
+# Analysed source roots. Directory-style entries match everything beneath
+# them; globs (e.g. "*.c") are also honoured.
+# The shipped library is src/ + the public header. tests/ is host-side test
+# and integration infrastructure, out of MISRA scope.
+scope   = ["include/", "src/"]
+# Explicitly excluded. Every compile-DB file must match scope OR exclude;
+# an unclassified file is a hard error (no silent scope creep).
+exclude = ["tests/", "bench/"]
+
+[db]
+# Where compile_commands.json comes from: meson | cmake | existing | bear.
+source = "meson"
+# path = "build/compile_commands.json"   # only for source = "existing"
+
+[platform]
+# A cppcheck built-in (unix64, unix32, ...) or set [platform].xml to a
+# custom platform description for exotic targets.
+# The analysis runs on the host preset. A 16-bit-MAU target has CHAR_BIT == 16,
+# which no host preset simulates, so target analysis is out of scope.
+preset = "unix64"
+
+[toolchain]
+# Extra -D defines cppcheck should see (e.g. neutralising compiler
+# keywords on a cross target: "__interrupt=").
+defines = []
+
+[rules]
+# Bring-your-own MISRA headlines (see docs/rule-texts.md). Never commit it.
+# Precedence: $MISRA_RULE_TEXTS > this value. Absent => category: unknown.
+texts = "${MISRA_RULE_TEXTS}"
+
+[report]
+# Default output is the terminal. Add file outputs as needed, e.g.:
+#   outputs = ["terminal", {format = "json", path = "misra.json"}]
+outputs = ["terminal"]
+
+[deviations]
+# Project-level (blanket) MISRA deviations. Each entry is a cppcheck
+# suppression whose preceding comment block is the mandatory justification;
+# `misch deviations` harvests them into the audit record.
+suppressions = "misra-deviations.txt"

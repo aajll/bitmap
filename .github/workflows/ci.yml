@@ -1,0 +1,277 @@
+name: CI
+
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Meson-built tests run under ASan + UBSan on Linux and ASan on macOS. The
+  # packaging integration tests also run, but their isolated consumer builds
+  # use their own compiler flags and are not sanitizer-instrumented.
+  # ---------------------------------------------------------------------------
+  test:
+    name: "Test (${{ matrix.os }})"
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            sanitize: address,undefined
+          - os: macos-latest
+            sanitize: address
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install tools (Ubuntu)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update -q && sudo apt-get install -y ninja-build pkg-config
+
+      - name: Install tools (macOS)
+        if: runner.os == 'macOS'
+        run: brew install ninja pkg-config
+
+      - name: Install meson
+        run: pip install meson
+
+      - name: Configure (debug + sanitizers)
+        run: >
+          meson setup build
+          --buildtype=debug
+          -Dbuild_tests=true
+          -Db_sanitize=${{ matrix.sanitize }}
+
+      - name: Build
+        run: meson compile -C build
+
+      - name: Test
+        run: meson test -C build --verbose
+
+      - name: Upload test log
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: testlog-${{ matrix.os }}
+          path: build/meson-logs/testlog.txt
+
+  # ---------------------------------------------------------------------------
+  # The caller-serialized threaded example must be clean under
+  # ThreadSanitizer. Every conflicting bitmap access runs under a caller mutex,
+  # so a TSAN report here means the example or the contract is wrong.
+  # ---------------------------------------------------------------------------
+  tsan:
+    name: "ThreadSanitizer"
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install ninja
+        run: sudo apt-get update -q && sudo apt-get install -y ninja-build
+
+      - name: Install meson
+        run: pip install meson
+
+      - name: Configure (TSAN)
+        run: >
+          meson setup build
+          --buildtype=debug
+          -Dbuild_tests=true
+          -Db_sanitize=thread
+
+      - name: Build
+        run: meson compile -C build
+
+      - name: Test
+        run: meson test -C build --verbose
+
+      - name: Upload test log
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: testlog-tsan
+          path: build/meson-logs/testlog.txt
+
+  # ---------------------------------------------------------------------------
+  # Verify the library sources compile clean for a bare-metal 32-bit target
+  # with no libc startup. Integration tests are native-only and are not run.
+  # The TI C28x target is consumer-owned (see docs/design.md). This job only
+  # proves the sources are freestanding-clean on a 32-bit bare-metal target.
+  # ---------------------------------------------------------------------------
+  cross-compile:
+    name: "Cross-compile (arm-none-eabi)"
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install arm-none-eabi toolchain
+        run: sudo apt-get update -q && sudo apt-get install -y gcc-arm-none-eabi
+
+      - name: Compile library sources
+        run: >
+          arm-none-eabi-gcc -std=c11 -Wall -Wextra -Werror
+          -mcpu=cortex-m0 -mthumb -ffreestanding -Os
+          -Iinclude -c src/bitmap.c -o /tmp/bitmap.o
+
+  # ---------------------------------------------------------------------------
+  # Enforce clang-format on all hand-written sources. scripts/format.sh pins
+  # the clang-format release and runs it through uvx, so CI and local checks
+  # use the same formatter whatever the runner's packages provide.
+  # ---------------------------------------------------------------------------
+  format:
+    name: "clang-format"
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v10.1.0
+
+      - name: Check formatting
+        run: scripts/format.sh
+
+  # ---------------------------------------------------------------------------
+  # Verify the library compiles cleanly in release mode with no tests, the
+  # configuration a downstream project would use.
+  # ---------------------------------------------------------------------------
+  release-build:
+    name: "Release build"
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install ninja
+        run: sudo apt-get update -q && sudo apt-get install -y ninja-build
+
+      - name: Install meson
+        run: pip install meson
+
+      - name: Configure (release)
+        run: meson setup build --buildtype=release -Dbuild_tests=false
+
+      - name: Build
+        run: meson compile -C build
+
+      - name: Run measurement tools
+        run: bench/measure.sh
+
+  # ---------------------------------------------------------------------------
+  # Coverage gate. The suite reaches 100% line and branch coverage of the
+  # shipped interface; the gate keeps it there.
+  # ---------------------------------------------------------------------------
+  coverage:
+    name: "Coverage gate"
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install ninja and gcovr
+        run: sudo apt-get update -q && sudo apt-get install -y ninja-build
+
+      - name: Install meson and gcovr
+        run: pip install meson gcovr
+
+      - name: Configure (coverage)
+        run: >
+          meson setup build
+          --buildtype=debug
+          -Dbuild_tests=true
+          -Db_coverage=true
+
+      - name: Build
+        run: meson compile -C build
+
+      - name: Run tests
+        run: meson test -C build --verbose
+
+      - name: Generate coverage report
+        run: |
+          mkdir -p coverage-report
+          gcovr \
+            --root . \
+            --filter 'src/' \
+            --filter 'include/' \
+            --html-details coverage-report/index.html \
+            --txt coverage-report/summary.txt \
+            --print-summary \
+            --fail-under-line 100 \
+            --fail-under-branch 100
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage-report/
+
+  # ---------------------------------------------------------------------------
+  # MISRA C:2023 static analysis via misch (cppcheck + misra addon), driven by
+  # misra.toml. Rule texts are never committed; set a MISRA_RULE_TEXTS secret
+  # for categorised output. Without it, findings are still detected and still
+  # fail the job, only headlines are absent. `misch deviations` enforces that
+  # every suppression carries a justification.
+  # ---------------------------------------------------------------------------
+  misra:
+    name: "MISRA (misch)"
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install ninja and cppcheck
+        run: sudo apt-get update -q && sudo apt-get install -y ninja-build cppcheck
+
+      - name: Install meson and misch
+        run: pip install meson misch
+
+      - name: Provide MISRA rule texts (optional secret)
+        env:
+          RULE_TEXTS: ${{ secrets.MISRA_RULE_TEXTS }}
+        run: |
+          if [ -n "$RULE_TEXTS" ]; then
+            printf '%s\n' "$RULE_TEXTS" > "$RUNNER_TEMP/misra_rule_texts.txt"
+            echo "MISRA_RULE_TEXTS=$RUNNER_TEMP/misra_rule_texts.txt" >> "$GITHUB_ENV"
+          else
+            echo "No MISRA_RULE_TEXTS secret; findings will be category: unknown."
+          fi
+
+      - name: Configure (compile database)
+        run: meson setup build --buildtype=debug -Dbuild_tests=true
+
+      - name: Analyse
+        run: misch run -v
+
+      - name: Deviation record
+        run: misch deviations

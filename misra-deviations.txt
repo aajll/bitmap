@@ -1,0 +1,29 @@
+# Project-level MISRA deviations for bitmap. Each entry is preceded by the
+# rationale that misch harvests into the deviation record. A bare rule id
+# deviates that rule across every in-scope file; add :file or :file:line to
+# narrow the scope.
+
+# Rule 15.5 (a function should have a single point of exit) is deviated
+# project-wide as a deliberate house style. The public entry points are
+# precondition-checked at the boundary, and guard-clause returns for invalid
+# arguments are clearer and less error-prone than threading a result through
+# nested if/else. None of these functions acquire a resource, take a lock, or
+# have any teardown, so a single exit point would protect no shared cleanup.
+# Advisory; deviation accepted.
+misra-c2012-15.5
+
+# Rule 8.7 (external linkage referenced in only one translation unit) is
+# deviated for the library implementation file. Every public entry point is
+# declared in bitmap.h and called by consumer translation units outside the
+# analysed scope; tests are excluded from analysis by design. External linkage
+# is the API, so making these functions static or internal-linkage would
+# remove the library. Advisory; deviation accepted.
+misra-c2012-8.7:src/bitmap.c
+
+# Rule 2.5 (unused macro definitions) is deviated for the public header. The
+# sizing helpers BITMAP_WORDS_FOR_BITS, BITMAP_STORAGE_WORDS, and
+# BITMAP_ARRAY_WORDS are part of the documented public interface: consumers use
+# them to size backing arrays and derive storage counts. They are exercised by
+# the (out-of-scope) test and integration suites and cannot be removed without
+# breaking callers. Advisory; deviation accepted.
+misra-c2012-2.5:include/bitmap.h
