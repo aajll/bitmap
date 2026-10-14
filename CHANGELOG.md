@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+
+- CI installs Meson, gcovr and misch with `uv` instead of `pip`, matching the local setup in `CONTRIBUTING.md`.
+- CI cross-builds the library with warnings as errors for a 16-bit-MAU target (`CHAR_BIT == 16`) with two compiler releases, under both object formats.
+
 ## [0.1.0] - 2026-09-11
 
 Initial release.

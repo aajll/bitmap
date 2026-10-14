@@ -68,7 +68,8 @@ bench/measure.sh clang
 
 - CI definitions live in `.github/workflows/ci.yml`.
 - Prefer running the same commands locally as CI runs.
-- The CI jobs are: tests under ASan/UBSan, ThreadSanitizer, an `arm-none-eabi` freestanding compile, `clang-format`, a release build with a measurement-tool smoke test, a 100 percent line and branch coverage gate, and `misch`. The isolated packaging consumers use their own compiler flags and are not sanitiser-instrumented.
+- Install Python tools (Meson, gcovr, misch) with `uv tool install`, never `pip`; CI does the same through `astral-sh/setup-uv`.
+- The CI jobs are: tests under ASan/UBSan, ThreadSanitizer, an `arm-none-eabi` freestanding compile, a TI C2000 cross-build (CGT 22.6.2 and 25.11.1, COFF and EABI, warnings as errors), `clang-format`, a release build with a measurement-tool smoke test, a 100 percent line and branch coverage gate, and `misch`. The isolated packaging consumers use their own compiler flags and are not sanitiser-instrumented.
 
 ---
 

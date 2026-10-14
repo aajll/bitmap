@@ -65,7 +65,7 @@ The integration tests build real consumers in copy-in, subproject, and installed
 The consuming firmware owns its cross file, linker command file, and memory placement. No cross file ships with this project.
 
 - CI compiles the library for `arm-none-eabi` (Cortex-M0, freestanding, `-Os`).
-- The library source compiles without diagnostics with a vendor C11 compiler for a 16-bit-MAU DSP target, where `CHAR_BIT` is 16. The recorded command is in [design.md](design.md#memory-cost).
+- CI compiles the library with warnings as errors using two releases of a vendor C11 compiler for a 16-bit-MAU DSP target, where `CHAR_BIT` is 16, under both of its object formats. The recorded footprint command is in [design.md](design.md#memory-cost).
 
 These results cover the source dialect and type assumptions only. Linking, execution, operation timing, and the final map-file footprint remain checks for the consumer.
 

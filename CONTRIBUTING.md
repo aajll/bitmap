@@ -4,9 +4,14 @@
 
 ## Getting started
 
-Install a C11 compiler, Meson, and Ninja. Native integration tests also need Python 3.10 or later, `pkg-config` or `pkgconf`, and a C++17 compiler. The same commands CI runs, locally:
+Install a C11 compiler and Ninja, and install the Python tools with [uv](https://docs.astral.sh/uv/) as CI does. Native integration tests also need Python 3.10 or later, `pkg-config` or `pkgconf`, and a C++17 compiler. The same commands CI runs, locally:
 
 ```sh
+# Python tools
+uv tool install meson
+uv tool install gcovr
+uv tool install misch
+
 # Configure with tests and sanitisers (CI default)
 meson setup build --buildtype=debug -Dbuild_tests=true \
                   -Db_sanitize=address,undefined

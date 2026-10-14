@@ -52,7 +52,7 @@ The library is not thread-safe or interrupt-safe on its own, so the caller seria
 | ----------------------- | ----------------------------- | -------------------------------------- |
 | GCC, Clang              | Linux hosts                   | Unit, integration, and sanitiser tests |
 | `arm-none-eabi-gcc`     | Cortex-M0, freestanding       | Library compile                        |
-| DSP vendor C11 compiler | 16-bit MAU (`CHAR_BIT == 16`) | Library compile                        |
+| DSP vendor C11 compiler | 16-bit MAU (`CHAR_BIT == 16`) | Library compile, two object formats    |
 
 Target linking, execution, and timing belong to the consuming firmware. See [cross builds](docs/integration.md#cross-builds).
 
