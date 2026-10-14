@@ -50,7 +50,7 @@ The library is not thread-safe or interrupt-safe on its own, so the caller seria
 
 | Toolchain               | Target                        | Validation                             |
 | ----------------------- | ----------------------------- | -------------------------------------- |
-| GCC, Clang              | Linux and macOS hosts         | Unit, integration, and sanitiser tests |
+| GCC, Clang              | Linux hosts                   | Unit, integration, and sanitiser tests |
 | `arm-none-eabi-gcc`     | Cortex-M0, freestanding       | Library compile                        |
 | DSP vendor C11 compiler | 16-bit MAU (`CHAR_BIT == 16`) | Library compile                        |
 

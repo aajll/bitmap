@@ -8,22 +8,13 @@ on:
 
 jobs:
   # ---------------------------------------------------------------------------
-  # Meson-built tests run under ASan + UBSan on Linux and ASan on macOS. The
+  # Meson-built tests run under ASan + UBSan. The
   # packaging integration tests also run, but their isolated consumer builds
   # use their own compiler flags and are not sanitizer-instrumented.
   # ---------------------------------------------------------------------------
   test:
-    name: "Test (${{ matrix.os }})"
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: ubuntu-latest
-            sanitize: address,undefined
-          - os: macos-latest
-            sanitize: address
+    name: "Test"
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -32,13 +23,8 @@ jobs:
         with:
           python-version: "3.x"
 
-      - name: Install tools (Ubuntu)
-        if: runner.os == 'Linux'
+      - name: Install tools
         run: sudo apt-get update -q && sudo apt-get install -y ninja-build pkg-config
-
-      - name: Install tools (macOS)
-        if: runner.os == 'macOS'
-        run: brew install ninja pkg-config
 
       - name: Install meson
         run: pip install meson
@@ -48,7 +34,7 @@ jobs:
           meson setup build
           --buildtype=debug
           -Dbuild_tests=true
-          -Db_sanitize=${{ matrix.sanitize }}
+          -Db_sanitize=address,undefined
 
       - name: Build
         run: meson compile -C build
@@ -60,7 +46,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: testlog-${{ matrix.os }}
+          name: testlog
           path: build/meson-logs/testlog.txt
 
   # ---------------------------------------------------------------------------

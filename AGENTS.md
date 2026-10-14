@@ -68,7 +68,7 @@ bench/measure.sh clang
 
 - CI definitions live in `.github/workflows/ci.yml`.
 - Prefer running the same commands locally as CI runs.
-- The CI jobs are: tests under ASan/UBSan on Linux and ASan on macOS, ThreadSanitizer, an `arm-none-eabi` freestanding compile, `clang-format`, a release build with a measurement-tool smoke test, a 100 percent line and branch coverage gate, and `misch`. The isolated packaging consumers use their own compiler flags and are not sanitiser-instrumented.
+- The CI jobs are: tests under ASan/UBSan, ThreadSanitizer, an `arm-none-eabi` freestanding compile, `clang-format`, a release build with a measurement-tool smoke test, a 100 percent line and branch coverage gate, and `misch`. The isolated packaging consumers use their own compiler flags and are not sanitiser-instrumented.
 
 ---
 
