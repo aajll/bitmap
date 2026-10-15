@@ -85,6 +85,29 @@
 #error "bitmap requires an exact 16-bit unsigned type (uint16_t)"
 #endif
 
+/* ================ VERSION ================================================= */
+
+/**
+ * @name Version
+ * @brief Release of this header, for diagnostics and @c #if checks.
+ *
+ * @details
+ *    @c BITMAP_VERSION_NUMBER is @c MAJOR*10000 @c + @c MINOR*100 @c + @c PATCH
+ *    with type @c long, so it cannot overflow where @c int is 16 bits. The
+ *    Meson build fails to configure when these values differ from the
+ *    project version.
+ * @{
+ */
+#define BITMAP_VERSION_MAJOR  0
+#define BITMAP_VERSION_MINOR  1
+#define BITMAP_VERSION_PATCH  0
+#define BITMAP_VERSION        "0.1.0"
+#define BITMAP_VERSION_STRING BITMAP_VERSION
+#define BITMAP_VERSION_NUMBER                                                  \
+        ((BITMAP_VERSION_MAJOR * 10000L) + (BITMAP_VERSION_MINOR * 100L)       \
+         + BITMAP_VERSION_PATCH)
+/** @} */
+
 /* ================ TYPES =================================================== */
 
 /**
