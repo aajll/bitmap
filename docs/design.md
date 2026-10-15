@@ -56,7 +56,7 @@ The final word can hold bits that have no logical index. Every query, count, sca
 
 `BITMAP_WORDS_FOR_BITS(bits)` is the constant-expression form for array declarations and static assertions. `BITMAP_STORAGE_WORDS(bits)` returns the same value but never zero, so a declared array is never zero-length when the bit count is a compile-time zero. `BITMAP_ARRAY_WORDS(array)` returns the word count of an array object, which lets a caller pass the array's own capacity to `bitmap_init` so the declared array and the reported capacity cannot disagree.
 
-`BITMAP_INITIALIZER(array, bits)` expands to a braced `bitmap_t` initialiser. Compilation fails when `BITMAP_ARRAY_WORDS(array)` is less than `BITMAP_WORDS_FOR_BITS(bits)`. C11 has no static assertion that can appear inside an expression, so the check is a zero-valued `sizeof` term whose array size becomes negative when the storage is too small. Every conforming C and C++ compiler must reject a negative array size. `array` must name an array object rather than a pointer.
+`BITMAP_INITIALIZER(array, bits)` expands to a braced `bitmap_t` initialiser. Compilation fails when `BITMAP_ARRAY_WORDS(array)` is less than `BITMAP_WORDS_FOR_BITS(bits)`. C11 has no static assertion that can appear inside an expression, so the check is a zero-valued `sizeof` term whose array size becomes negative when the storage is too small. Every conforming C compiler must reject a negative array size. `array` must name an array object rather than a pointer.
 
 The macro forms evaluate their arguments more than once. Use them with side-effect-free constants. Use `bitmap_words_for_bits` for runtime values.
 
@@ -243,7 +243,7 @@ fault_raise(size_t position)
 
 ## Portability
 
-- C11. The header also compiles as C++17 and the library links from C++.
+- C11 only.
 - Exact 16-bit `uint16_t` is required and asserted at compile time.
 - A C byte need not be an octet. Capacities are words and logical capacities are bits, and no in-memory object size is treated as a wire length.
 - `uint8_t` is not used, because on some targets it aliases a wider unit.
@@ -307,6 +307,6 @@ If external serialisation cannot meet the timing or execution-context requiremen
 
 The unit suite covers capacities 0 through 200 plus the documented boundary sizes, every failure path, poisoned tail bits, canaries around storage and extra backing words, a fixed-seed randomised model comparison, several independent instances in one translation unit, and compile-time `const` descriptors, including a table of descriptors with different capacities. `src/` reaches 100 percent line and branch coverage.
 
-Integration tests build real consumers in three ways: copy-in with only `include/bitmap.h` and `src/bitmap.c`, a Meson subproject, and an installed `pkg-config` package. Each serves eight different capacities from one library build. The copy-in test also compiles one fixture twice: with exact-fit storage it must build, and with one word too few it must fail to compile. A C++17 test links the same header and library. A documentation test compiles every C example in the README and `docs/` against the header, so a changed signature or macro cannot leave a stale example. A threaded test uses one mutex around every conflicting access and is clean under ThreadSanitizer. An optional coexistence test links a second local library when its checkout is present, to confirm that headers and symbols do not collide. The optional fixture has its own compile-database entry so language tools receive the required include path.
+Integration tests build real consumers in three ways: copy-in with only `include/bitmap.h` and `src/bitmap.c`, a Meson subproject, and an installed `pkg-config` package. Each serves eight different capacities from one library build. The copy-in test also compiles one fixture twice: with exact-fit storage it must build, and with one word too few it must fail to compile. A documentation test compiles every C example in the README and `docs/` against the header, so a changed signature or macro cannot leave a stale example. A threaded test uses one mutex around every conflicting access and is clean under ThreadSanitizer. An optional coexistence test links a second local library when its checkout is present, to confirm that headers and symbols do not collide. The optional fixture has its own compile-database entry so language tools receive the required include path.
 
 CI compiles the library source with warnings as errors under TI C2000 Code Generation Tools 22.6.2.LTS and 25.11.1.LTS in C11 C28x mode, under both the COFF and EABI ABIs. This validates the source dialect and type assumptions only. Linking, target execution, operation WCET, interrupt behaviour, and final map-file footprint remain consumer-owned checks.

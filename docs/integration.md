@@ -5,7 +5,7 @@ This guide shows how to add `bitmap` to a project, build it, and run its tests. 
 ## Requirements
 
 - A C11 compiler with an exact 16-bit `uint16_t`. The header checks this at compile time.
-- For the tests: Meson, Ninja, Python 3.10 or later, `pkg-config` or `pkgconf`, and a C++17 compiler.
+- For the tests: Meson, Ninja, Python 3.10 or later and `pkg-config` or `pkgconf`.
 
 ## Copy-in
 

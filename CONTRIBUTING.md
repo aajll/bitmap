@@ -4,7 +4,7 @@
 
 ## Getting started
 
-Install a C11 compiler and Ninja, and install the Python tools with [uv](https://docs.astral.sh/uv/) as CI does. Native integration tests also need Python 3.10 or later, `pkg-config` or `pkgconf`, and a C++17 compiler. The same commands CI runs, locally:
+Install a C11 compiler and Ninja, and install the Python tools with [uv](https://docs.astral.sh/uv/) as CI does. Native integration tests also need Python 3.10 or later and `pkg-config` or `pkgconf`. The same commands CI runs, locally:
 
 ```sh
 # Python tools
@@ -41,7 +41,7 @@ scripts/format.sh --fix
 
 ## C language rules
 
-- C11 only. The header must also compile as C++17.
+- C11 only.
 - Keep the public header valid for a conforming freestanding implementation. Do not add a hosted-only standard-library dependency for a compile-time facility.
 - Use fixed-width types from `<stdint.h>` and `<stdbool.h>`. `bitmap_word_t` is exactly `uint16_t`. Do not use `uint8_t`.
 - No heap allocation (`malloc`, `free`, VLAs), no hidden state, and no singleton.

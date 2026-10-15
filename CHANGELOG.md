@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ### Removed
 
 - `bitmap_version.h`. `bitmap.h` defines the version macros.
+- The `extern "C"` guards in `bitmap.h`. The library is C11 only and its headers make no C++ claim. The C++17 header test is removed with them.
 
 ## [0.1.0] - 2026-09-11
 

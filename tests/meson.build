@@ -36,18 +36,6 @@ test_threads_exe = executable(
 )
 test('bitmap caller-serialized threads', test_threads_exe, timeout: 60)
 
-# C++17 portable-interface smoke test (native builds only; it links the host
-# library, so it is meaningless in a cross build).
-if not meson.is_cross_build() and add_languages('cpp', required: false, native: true)
-  test_cpp_exe = executable(
-    'test_bitmap_cpp',
-    ['test_cpp.cpp'],
-    dependencies: [bitmap_dep],
-    cpp_args: ['-std=c++17', '-Werror'],
-  )
-  test('bitmap c++ header', test_cpp_exe)
-endif
-
 # Native integration: copy-in, Meson subproject, installed pkg-config, and
 # coexistence with a second local library when it is checked out. The mode
 # is positional and must precede the trailing variadic --cc list.
