@@ -39,7 +39,7 @@ fault_example(void)
 - Every call checks its arguments and returns `bool`, and a failed call changes nothing
 - `const` descriptors built at compile time, which can live in read-only memory
 - Set, clear, test, test-and-set, test-and-clear, fill, any, count, scan, and snapshot
-- C11, with a header that also compiles as C++17
+- C11
 - Safe with a 16-bit `int` and with bytes wider than 8 bits
 - 1.5 to 1.8 KiB of code at `-Os` on x86_64, with no `.data` or `.bss`
 - 100% line and branch coverage, sanitiser-clean tests, and zero MISRA C:2023 findings from [`misch`](https://pypi.org/project/misch/)

@@ -48,7 +48,7 @@ bench/measure.sh clang
 ### 1.2 Notes
 
 - `include/bitmap.h` defines the version macros, and `meson setup` fails when they differ from `project(version:)`, so a release updates both. Copy-in needs only `include/bitmap.h` and `src/bitmap.c`.
-- Integration tests call `meson`, `pkg-config`, and a C++ compiler. They are native-only and are skipped in cross builds.
+- Integration tests call `meson` and `pkg-config`. They are native-only and are skipped in cross builds.
 
 ---
 

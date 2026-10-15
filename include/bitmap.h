@@ -143,19 +143,9 @@ typedef struct {
         size_t bit_count;     /**< Logical capacity in bits.                 */
 } bitmap_t;
 
-#if defined(__cplusplus)
-static_assert((sizeof(bitmap_word_t) * (size_t)CHAR_BIT)
-                  == (size_t)BITMAP_BITS_PER_WORD,
-              "bitmap_word_t must be exactly 16 bits wide");
-#else
 _Static_assert((sizeof(bitmap_word_t) * (size_t)CHAR_BIT)
                    == (size_t)BITMAP_BITS_PER_WORD,
                "bitmap_word_t must be exactly 16 bits wide");
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 /**
  * @defgroup bitmap_api bitmap Library
@@ -430,9 +420,5 @@ bool bitmap_snapshot(const bitmap_t *map, bitmap_word_t *dest,
                      size_t dest_words);
 
 /** @} */
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* BITMAP_H_ */
