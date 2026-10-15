@@ -43,7 +43,7 @@ meson install -C build
 cc app.c $(pkg-config --cflags --libs --static bitmap) -o app
 ```
 
-After installation the header is available as `#include <bitmap.h>`. An optional `bitmap_version.h` is installed beside it, and the library sources do not include it.
+After installation the header is available as `#include <bitmap.h>`, which also defines the version macros described in [api.md](api.md#version). `bitmap_version.h` is installed beside it as a deprecated header that includes `bitmap.h`.
 
 ## Build and test
 

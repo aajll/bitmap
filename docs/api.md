@@ -142,3 +142,25 @@ set_bank_bit(const bitmap_t *map, size_t bank, size_t bit)
         return bitmap_set(map, (bank * BITMAP_BITS_PER_WORD) + bit);
 }
 ```
+
+## Version
+
+`bitmap.h` defines the release it belongs to, so a copied-in header still identifies itself:
+
+<!-- snippet: skip -->
+```c
+#define BITMAP_VERSION_MAJOR 0
+#define BITMAP_VERSION_MINOR 1
+#define BITMAP_VERSION_PATCH 0
+#define BITMAP_VERSION "0.1.0"
+```
+
+`BITMAP_VERSION_NUMBER` is `MAJOR * 10000 + MINOR * 100 + PATCH` as a `long`, so it holds any version where `int` is 16 bits. Compare it in the preprocessor to require a minimum release:
+
+```c
+#if BITMAP_VERSION_NUMBER < 100L
+#error "bitmap 0.1.0 or later is required"
+#endif
+```
+
+`BITMAP_VERSION_STRING` is the same string as `BITMAP_VERSION`. `bitmap_version.h` is a deprecated header that includes `bitmap.h`, kept so existing includes compile until the next major release.

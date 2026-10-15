@@ -27,7 +27,7 @@ from typing import final
 CAPACITIES = (0, 1, 15, 16, 17, 37, 192, 193)
 PEER_BITS = 300
 PROJECT_FILES = ("meson.build", "meson_options.txt")
-PROJECT_DIRS = ("include", "src", "config")
+PROJECT_DIRS = ("include", "src")
 
 
 @final
@@ -151,7 +151,6 @@ class Tests:
             )
         print("copy-in: BITMAP_INITIALIZER rejects undersized storage")
 
-        assert not (self.work / "bitmap_version.h").exists()
         print(f"copy-in: {self.count} capacities linked against one bitmap.o")
 
     def subproject(self) -> None:
@@ -236,7 +235,22 @@ class Tests:
             _ = command([exe])
             self.count += 1
 
+        forwarder = self.work / "forwarder.c"
+        _ = forwarder.write_text(
+            "#include <bitmap_version.h>\n"
+            "#ifndef BITMAP_VERSION_NUMBER\n"
+            "#error bitmap_version.h does not provide the version macros\n"
+            "#endif\n"
+            "int forwarder_major = BITMAP_VERSION_MAJOR;\n"
+        )
+        _ = command(
+            self.cc
+            + self.flags
+            + cflags
+            + ["-c", forwarder, "-o", self.work / "forwarder.o"]
+        )
         print(f"installed: {self.count} capacities via pkg-config")
+        print("installed: bitmap_version.h forwards to bitmap.h")
 
     def coexistence(self) -> None:
         if not (self.status / "include" / "status.h").exists():
