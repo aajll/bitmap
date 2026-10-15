@@ -51,7 +51,6 @@ bitmap_lib = static_library(
 
 install_headers(
   'include/bitmap.h',
-  'include/bitmap_version.h',
   subdir: 'bitmap',
 )
 

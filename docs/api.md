@@ -163,4 +163,4 @@ set_bank_bit(const bitmap_t *map, size_t bank, size_t bit)
 #endif
 ```
 
-`BITMAP_VERSION_STRING` is the same string as `BITMAP_VERSION`. `bitmap_version.h` is a deprecated header that includes `bitmap.h`, kept so existing includes compile until the next major release.
+`BITMAP_VERSION_STRING` is the same string as `BITMAP_VERSION`.
