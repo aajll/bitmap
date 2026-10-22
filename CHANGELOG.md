@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-22
+
 ### Changed
 
 - `bitmap.h` defines `BITMAP_VERSION_MAJOR`, `_MINOR`, `_PATCH`, `BITMAP_VERSION`, `BITMAP_VERSION_STRING` and a new `BITMAP_VERSION_NUMBER` (`long`, `MAJOR * 10000 + MINOR * 100 + PATCH`), so a copied-in header carries its version. Meson fails to configure when the header and `project(version:)` disagree, and the build needs Meson 0.57 or later.

@@ -3,7 +3,7 @@
 project(
   'bitmap',
   'c',
-  version: '0.1.0',
+  version: '0.2.0',
   meson_version: '>=0.57.0',
   default_options: [
     'c_std=c11',
