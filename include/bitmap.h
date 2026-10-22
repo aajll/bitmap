@@ -99,9 +99,9 @@
  * @{
  */
 #define BITMAP_VERSION_MAJOR  0
-#define BITMAP_VERSION_MINOR  1
+#define BITMAP_VERSION_MINOR  2
 #define BITMAP_VERSION_PATCH  0
-#define BITMAP_VERSION        "0.1.0"
+#define BITMAP_VERSION        "0.2.0"
 #define BITMAP_VERSION_STRING BITMAP_VERSION
 #define BITMAP_VERSION_NUMBER                                                  \
         ((BITMAP_VERSION_MAJOR * 10000L) + (BITMAP_VERSION_MINOR * 100L)       \

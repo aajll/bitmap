@@ -150,16 +150,16 @@ set_bank_bit(const bitmap_t *map, size_t bank, size_t bit)
 <!-- snippet: skip -->
 ```c
 #define BITMAP_VERSION_MAJOR 0
-#define BITMAP_VERSION_MINOR 1
+#define BITMAP_VERSION_MINOR 2
 #define BITMAP_VERSION_PATCH 0
-#define BITMAP_VERSION "0.1.0"
+#define BITMAP_VERSION "0.2.0"
 ```
 
 `BITMAP_VERSION_NUMBER` is `MAJOR * 10000 + MINOR * 100 + PATCH` as a `long`, so it holds any version where `int` is 16 bits. Compare it in the preprocessor to require a minimum release:
 
 ```c
-#if BITMAP_VERSION_NUMBER < 100L
-#error "bitmap 0.1.0 or later is required"
+#if BITMAP_VERSION_NUMBER < 200L
+#error "bitmap 0.2.0 or later is required"
 #endif
 ```
 
