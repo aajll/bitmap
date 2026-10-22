@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: MIT */
+
 #include "test_harness.h"
 
 #include <stdio.h>

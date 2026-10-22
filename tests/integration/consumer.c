@@ -1,4 +1,6 @@
 /*
+ * SPDX-License-Identifier: MIT
+ *
  * Integration consumer. Compiled once per capacity against a single bitmap
  * library build, and linked with peer.c, which uses a different capacity.
  * A zero exit status means every documented operation behaved.

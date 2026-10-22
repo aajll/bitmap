@@ -1,4 +1,6 @@
 /*
+ * SPDX-License-Identifier: MIT
+ *
  * Compile-time capacity check for BITMAP_INITIALIZER. The copy-in test
  * compiles this file twice: with enough words it must build, and with one
  * word too few it must fail to compile.

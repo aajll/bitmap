@@ -1,4 +1,8 @@
-/* Minimal linked consumer: measures retained code for the descriptor API. */
+/*
+ * SPDX-License-Identifier: MIT
+ *
+ * Minimal linked consumer: measures retained code for the descriptor API.
+ */
 
 #include <bitmap.h>
 

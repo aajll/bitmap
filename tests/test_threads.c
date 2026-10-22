@@ -1,4 +1,6 @@
 /*
+ * SPDX-License-Identifier: MIT
+ *
  * Caller-serialized threaded example. The portable bitmap contract requires
  * external serialization for conflicting access, including two writers that
  * touch different bits of the same word. Every worker mutation runs under one

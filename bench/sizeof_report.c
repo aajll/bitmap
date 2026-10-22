@@ -1,4 +1,8 @@
-/* Prints descriptor layout facts for docs/design.md. */
+/*
+ * SPDX-License-Identifier: MIT
+ *
+ * Prints descriptor layout facts for docs/design.md.
+ */
 
 #include <bitmap.h>
 
