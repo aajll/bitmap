@@ -1,4 +1,8 @@
-/* Host operation-cost probe. Results are evidence, not target WCET. */
+/*
+ * SPDX-License-Identifier: MIT
+ *
+ * Host operation-cost probe. Results are evidence, not target WCET.
+ */
 
 #define _POSIX_C_SOURCE 200809L
 

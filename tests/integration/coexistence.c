@@ -1,4 +1,6 @@
 /*
+ * SPDX-License-Identifier: MIT
+ *
  * Coexistence integration fixture. Links the bitmap library and a second
  * library in one program. Neither library is modified: the second library is
  * compiled as-is from its own checkout with its own public headers.

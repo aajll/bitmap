@@ -1,4 +1,8 @@
-/* Minimal linked consumer: same operations, explicit-capacity prototype. */
+/*
+ * SPDX-License-Identifier: MIT
+ *
+ * Minimal linked consumer: same operations, explicit-capacity prototype.
+ */
 
 #include "prototype.h"
 

@@ -1,4 +1,6 @@
 /*
+ * SPDX-License-Identifier: MIT
+ *
  * Integration peer translation unit. Uses a capacity different from the
  * consumer's, so linking both against one bitmap library build demonstrates
  * that the library is capacity-independent.

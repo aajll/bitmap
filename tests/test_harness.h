@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: MIT */
+
 #ifndef BITMAP_TEST_HARNESS_H_
 #define BITMAP_TEST_HARNESS_H_
 

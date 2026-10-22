@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: MIT
+
 thread_dep = dependency('threads')
 
 # Core behavioural suite: sizing, lifecycle, single-bit operations, bulk
